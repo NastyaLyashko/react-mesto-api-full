@@ -20,10 +20,12 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   Card.create({ name, link, owner })
-    .orFail(() => {
-      throw new BadRequest('BadRequest');
+    .then((card) => {
+      if (!card) {
+        throw new BadRequest('BadRequest');
+      }
+      res.send({ data: card });
     })
-    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return res.status(400).send({ message: err.message });
@@ -33,23 +35,24 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  const owner = req.user._id;
-  if (!owner) {
-    throw new Forbidden('Нельзя удалить чужую карточку');
-  }
-  if (owner) {
-    Card.findByIdAndRemove(req.params.cardId)
-      .orFail(() => {
-        throw new NotFound('Карточка не найдена');
-      })
-      .then((card) => res.send({ data: card }))
-      .catch((err) => {
-        if (err instanceof mongoose.CastError) {
-          return res.status(400).send({ message: 'id not found' });
-        }
-        return next(err);
-      });
-  }
+  Card.findById(req.params.cardId)
+    .then((card) => {
+      if (String(card.owner) !== String(req.user._id)) {
+        throw new Forbidden('Нельзя удалить чужую карточку');
+      }
+      return Card.findByIdAndRemove(req.params.cardId)
+        .orFail(() => {
+          throw new NotFound('Карточка не найдена');
+        })
+        .catch((err) => next(err));
+    })
+    .then((card) => res.send({ data: card }))
+    .catch((err) => {
+      if (err instanceof mongoose.CastError) {
+        return res.status(400).send({ message: 'id not found' });
+      }
+      return next(err);
+    });
 };
 
 const likeCard = (req, res, next) => {
@@ -58,10 +61,12 @@ const likeCard = (req, res, next) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .orFail(() => {
-      throw new NotFound('Карточка не найдена');
+    .then((card) => {
+      if (!card) {
+        throw new NotFound('Карточка не найдена');
+      }
+      res.send({ data: card });
     })
-    .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err instanceof mongoose.CastError) {
         return res.status(400).send({ message: 'id not found' });
