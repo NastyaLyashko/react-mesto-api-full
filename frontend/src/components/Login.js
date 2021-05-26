@@ -13,7 +13,7 @@ function Login({ onLogin }) {
             ...data,
             [name]: value,
         });
-      }
+    }
 
     function handleSubmit(e) {
         e.preventDefault();

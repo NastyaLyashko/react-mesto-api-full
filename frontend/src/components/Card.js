@@ -22,7 +22,7 @@ export default function Card({card, onCardClick, onCardLike, onCardDelete}) {
 
     const cardDeleteButtonClassName = (
         `elements__delete-button ${isOwn ? 'elements__delete-button_visible' : 'elements__delete-button_hidden'}`
-      ); 
+    ); 
 
     const isLiked = card.likes.some(i => i === currentUser.data._id);
 

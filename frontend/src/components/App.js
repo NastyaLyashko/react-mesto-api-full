@@ -206,10 +206,10 @@ function App() {
                 if (res){
                     setLoggedIn(true);
                     setLoginData(res.data);
-                  }
+                }
             })
         }
-      }, []);
+    }, []);
 
     const handleSignOut = () => {
         localStorage.removeItem('jwt');

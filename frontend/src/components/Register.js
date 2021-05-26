@@ -14,7 +14,7 @@ function Register({ onRegister, onInfoTooltip }) {
             ...data,
             [name]: value,
         });
-      }
+    }
 
     function handleSubmit(e) {
         e.preventDefault();

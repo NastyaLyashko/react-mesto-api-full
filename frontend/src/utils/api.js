@@ -12,15 +12,12 @@ class Api {
         return fetch(`${this.baseUrl}/cards`, {
             headers: this.headers
         })
-          .then(res => {
+        .then(res => {
             if (res.ok) {
-              return res.json();
-            }
-      
-            return Promise.reject(`Ошибка: ${res.status}`);
-          })
-
-
+            return res.json();
+        }
+        return Promise.reject(`Ошибка: ${res.status}`);
+        })
     } 
     
     getUserData() {
