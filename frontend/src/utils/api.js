@@ -151,7 +151,7 @@ class Api {
 }
   
 export const api = new Api({
-    baseUrl: 'https://api.lyashkoay.students.nomoredomains.icu',
+    baseUrl: 'https://api.lyashko-mesto.nomoredomains.club',
     headers: {
         'authorization': `Bearer ${localStorage.getItem('jwt')}`,
         'Content-Type': 'application/json'
